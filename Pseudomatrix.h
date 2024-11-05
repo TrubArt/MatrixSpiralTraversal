@@ -13,7 +13,6 @@ public:
 	int GetColumnSize() const;
 	int GetElement(int i, int j) const;
 
-	QString SpiralTraversal() const;
 private:
 	int m_rowSize = 0;
 	int m_columnSize = 0;

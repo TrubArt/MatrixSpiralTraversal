@@ -1,15 +1,18 @@
 #include "stdafx.h"
 #include "MatrixSpiralTraversal.h"
-#include <qfuture.h>
-#include <qfuturewatcher.h>
-#include <QtConcurrent/qtconcurrentrun.h>
 
 MatrixSpiralTraversal::MatrixSpiralTraversal(QWidget *parent)
     : QMainWindow(parent)
     , m_Matrix()
+    , m_Alg()
 {
     ui.setupUi(this);
     connect(ui.start, &QPushButton::clicked, this, &MatrixSpiralTraversal::ClickButtonHandler);
+    connect(&m_Alg, &SpiralTraversalAlgorithm::goodBlockFound, this, [this](const QString& string)
+        {
+            ui.plainTextEdit->appendPlainText(string);
+        });
+    connect(&m_Alg, &SpiralTraversalAlgorithm::finished, this, &MatrixSpiralTraversal::EnableActiveButtons);
 }
 
 MatrixSpiralTraversal::~MatrixSpiralTraversal()
@@ -31,25 +34,13 @@ void MatrixSpiralTraversal::EnableActiveButtons()
 
 void MatrixSpiralTraversal::ClickButtonHandler()
 {
+    ui.plainTextEdit->clear();
+
     // set m_Matrix sizes
     m_Matrix.SetRowSize(ui.rowSize->value());
     m_Matrix.SetColumnSize(ui.columnSize->value());
+    m_Alg.SetMatrix(m_Matrix);
 
     DisenableActiveButtons();
-
-    // Thread for optimization of calculations
-
-    auto watcher = new QFutureWatcher<QString>(this);
-    connect(watcher, &QFutureWatcher<QString>::finished, this, [this, watcher]()
-    {
-        ui.plainTextEdit->setPlainText(watcher->result());
-        EnableActiveButtons();
-        watcher->deleteLater();
-    });
-
-    QFuture<QString> future = QtConcurrent::run([this]() -> QString
-    {
-         return m_Matrix.SpiralTraversal();
-    });
-    watcher->setFuture(future);
+    m_Alg.start();
 }

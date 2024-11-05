@@ -1,6 +1,7 @@
 #pragma once
 #include <QtWidgets/QMainWindow>
 #include "ui_MatrixSpiralTraversal.h"
+#include "SpiralTraversalAlgorithm.h"
 #include "Pseudomatrix.h"
 
 class MatrixSpiralTraversal : public QMainWindow
@@ -18,4 +19,5 @@ private:
 
     Ui::MatrixSpiralTraversalClass ui;
     PseudoMatrix m_Matrix;
+    SpiralTraversalAlgorithm m_Alg;
 };
