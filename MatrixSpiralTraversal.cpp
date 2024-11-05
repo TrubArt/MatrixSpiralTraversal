@@ -12,6 +12,10 @@ MatrixSpiralTraversal::MatrixSpiralTraversal(QWidget *parent)
         {
             ui.plainTextEdit->appendPlainText(string);
         });
+    connect(ui.plainTextEdit, &QPlainTextEdit::textChanged, this, [this]()
+        {
+            m_Alg.Wake();
+        });
     connect(&m_Alg, &SpiralTraversalAlgorithm::finished, this, &MatrixSpiralTraversal::EnableActiveButtons);
 }
 

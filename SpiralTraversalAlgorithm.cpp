@@ -19,6 +19,20 @@ void SpiralTraversalAlgorithm::SetMatrix(const PseudoMatrix& matrix)
     m_Matrix = matrix;
 }
 
+void SpiralTraversalAlgorithm::Sleep(quint32 milliseconds)
+{
+    m_Mutex.lock();
+    m_WaitCondition.wait(&m_Mutex, milliseconds);
+    m_Mutex.unlock();
+}
+
+void SpiralTraversalAlgorithm::Wake()
+{
+    m_Mutex.lock();
+    m_WaitCondition.wakeAll();
+    m_Mutex.unlock();
+}
+
 bool SpiralTraversalAlgorithm::IsNewBlockGood(const QString& answer) const
 {
     if (answer.size() >= 500)
@@ -33,6 +47,7 @@ QString SpiralTraversalAlgorithm::GetBlockIfIsGood(const QString& answer)
     {
         emit goodBlockFound(newAnswer);
         newAnswer.clear();
+        Sleep(5000);
     }
     return newAnswer;
 }
@@ -61,14 +76,12 @@ void SpiralTraversalAlgorithm::run()
             answer.push_back(QString::number(m_Matrix.GetElement(rowStart, currentIndex)) + " ");
         }
         rowStart += 1;
-        answer = GetBlockIfIsGood(answer);
 
         for (currentIndex = rowStart; currentIndex < rowEnd; ++currentIndex)
         {
             answer.push_back(QString::number(m_Matrix.GetElement(currentIndex, columnEnd - 1)) + " ");
         }
         columnEnd -= 1;
-        answer = GetBlockIfIsGood(answer);
 
         if (rowStart < rowEnd)
         {
@@ -77,7 +90,6 @@ void SpiralTraversalAlgorithm::run()
                 answer.push_back(QString::number(m_Matrix.GetElement(rowEnd - 1, currentIndex)) + " ");
             }
             rowEnd -= 1;
-            answer = GetBlockIfIsGood(answer);
         }
 
         if (columnStart < columnEnd)
@@ -87,8 +99,8 @@ void SpiralTraversalAlgorithm::run()
                 answer.push_back(QString::number(m_Matrix.GetElement(currentIndex, columnStart)) + " ");
             }
             columnStart += 1;
-            answer = GetBlockIfIsGood(answer);
         }
+        answer = GetBlockIfIsGood(answer);
     }
     emit goodBlockFound(answer);
 }

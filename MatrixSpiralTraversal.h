@@ -15,6 +15,9 @@ public:
 private:
     void DisenableActiveButtons();
     void EnableActiveButtons();
+    /**
+    * @brief Обработчик генерации матрицы
+    */
     void ClickButtonHandler();
 
     Ui::MatrixSpiralTraversalClass ui;
