@@ -191,8 +191,8 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset>
-            <normaloff>resource/button_cancel.png</normaloff>resource/button_cancel.png</iconset>
+           <iconset resource="MatrixSpiralTraversal.qrc">
+            <normaloff>:/img/resource/button_cancel.png</normaloff>:/img/resource/button_cancel.png</iconset>
           </property>
          </widget>
         </item>

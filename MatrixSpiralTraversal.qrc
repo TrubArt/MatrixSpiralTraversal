@@ -1,4 +1,5 @@
 <RCC>
-    <qresource prefix="MatrixSpiralTraversal">
+    <qresource prefix="/img">
+        <file>resource/button_cancel.png</file>
     </qresource>
 </RCC>
