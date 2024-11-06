@@ -8,6 +8,7 @@ MatrixSpiralTraversal::MatrixSpiralTraversal(QWidget *parent)
 {
     ui.setupUi(this);
     connect(ui.start, &QPushButton::clicked, this, &MatrixSpiralTraversal::ClickButtonHandler);
+    connect(ui.cancel, &QPushButton::clicked, &m_Alg, &SpiralTraversalAlgorithm::StopThreadExecution);
     connect(&m_Alg, &SpiralTraversalAlgorithm::goodBlockFound, this, [this](const QString& string)
         {
             ui.plainTextEdit->appendPlainText(string);
@@ -16,7 +17,15 @@ MatrixSpiralTraversal::MatrixSpiralTraversal(QWidget *parent)
         {
             m_Alg.Wake();
         });
-    connect(&m_Alg, &SpiralTraversalAlgorithm::finished, this, &MatrixSpiralTraversal::EnableActiveButtons);
+    connect(&m_Alg, &SpiralTraversalAlgorithm::finished, this, [this]()
+        {
+            if (m_Alg.GetStopStatus() == true)
+            {
+                ui.plainTextEdit->clear();
+                ui.plainTextEdit->appendPlainText("Execution was stopped");
+            }
+            EnableActiveButtons();
+        });
 }
 
 MatrixSpiralTraversal::~MatrixSpiralTraversal()
@@ -43,8 +52,8 @@ void MatrixSpiralTraversal::ClickButtonHandler()
     // set m_Matrix sizes
     m_Matrix.SetRowSize(ui.rowSize->value());
     m_Matrix.SetColumnSize(ui.columnSize->value());
+    
     m_Alg.SetMatrix(m_Matrix);
-
     DisenableActiveButtons();
     m_Alg.start();
 }

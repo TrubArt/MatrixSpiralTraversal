@@ -19,6 +19,16 @@ void SpiralTraversalAlgorithm::SetMatrix(const PseudoMatrix& matrix)
     m_Matrix = matrix;
 }
 
+void SpiralTraversalAlgorithm::StopThreadExecution()
+{
+    m_stopFromOutside = true;
+}
+
+bool SpiralTraversalAlgorithm::GetStopStatus() const
+{
+    return m_stopFromOutside;
+}
+
 void SpiralTraversalAlgorithm::Sleep(quint32 milliseconds)
 {
     m_Mutex.lock();
@@ -66,18 +76,17 @@ void SpiralTraversalAlgorithm::run()
     int columnStart = 0;
     int columnEnd = m_Matrix.GetRowSize();
 
-    int currentIndex = 0;
-    int startMessageIndex = 0;
+    m_stopFromOutside = false;
 
     while (rowStart < rowEnd && columnStart < columnEnd)
     {
-        for (currentIndex = columnStart; currentIndex < columnEnd; ++currentIndex)
+        for (int currentIndex = columnStart; currentIndex < columnEnd; ++currentIndex)
         {
             answer.push_back(QString::number(m_Matrix.GetElement(rowStart, currentIndex)) + " ");
         }
         rowStart += 1;
 
-        for (currentIndex = rowStart; currentIndex < rowEnd; ++currentIndex)
+        for (int currentIndex = rowStart; currentIndex < rowEnd; ++currentIndex)
         {
             answer.push_back(QString::number(m_Matrix.GetElement(currentIndex, columnEnd - 1)) + " ");
         }
@@ -85,7 +94,7 @@ void SpiralTraversalAlgorithm::run()
 
         if (rowStart < rowEnd)
         {
-            for (currentIndex = columnEnd - 1; currentIndex >= columnStart; --currentIndex)
+            for (int currentIndex = columnEnd - 1; currentIndex >= columnStart; --currentIndex)
             {
                 answer.push_back(QString::number(m_Matrix.GetElement(rowEnd - 1, currentIndex)) + " ");
             }
@@ -94,13 +103,18 @@ void SpiralTraversalAlgorithm::run()
 
         if (columnStart < columnEnd)
         {
-            for (currentIndex = rowEnd - 1; currentIndex >= rowStart; --currentIndex)
+            for (int currentIndex = rowEnd - 1; currentIndex >= rowStart; --currentIndex)
             {
                 answer.push_back(QString::number(m_Matrix.GetElement(currentIndex, columnStart)) + " ");
             }
             columnStart += 1;
         }
+
         answer = GetBlockIfIsGood(answer);
+        if (m_stopFromOutside)
+        {
+            return;
+        }
     }
     emit goodBlockFound(answer);
 }

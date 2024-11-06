@@ -1,5 +1,6 @@
 #pragma once
 #include "Pseudomatrix.h"
+
 #include <QThread>
 #include <QString>
 #include <QMutex>
@@ -12,6 +13,8 @@ class SpiralTraversalAlgorithm : public QThread
 public:
 	explicit SpiralTraversalAlgorithm(QObject* parent = nullptr);
 	void SetMatrix(const PseudoMatrix& matrix);
+	void StopThreadExecution();
+	bool GetStopStatus() const;
 
 	/**
 	* @brief Усыпляет текущий поток на milleseconds миллисекунд.
@@ -31,7 +34,7 @@ private:
 	void run() override;
 
 	/**
-	* @brief Возвращает true, если полученный answer сформирован
+	* @brief Возвращает true, если полученный блок answer сформирован
 	(имеет достаточную длину), иначе false.
 	* @param answer передаваемый для оценивания блок.
 	*/
@@ -45,6 +48,7 @@ private:
 	*/
 	QString GetBlockIfIsGood(const QString& answer);
 
+	bool m_stopFromOutside = false;
 	PseudoMatrix m_Matrix;
 	QMutex m_Mutex;
 	QWaitCondition m_WaitCondition;
