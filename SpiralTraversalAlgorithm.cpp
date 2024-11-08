@@ -72,9 +72,9 @@ void SpiralTraversalAlgorithm::run()
     answer.reserve(stringElementSize * elementsCount);
 
     int rowStart = 0;
-    int rowEnd = m_Matrix.GetColumnSize();
+    int rowEnd = m_Matrix.GetRowSize();
     int columnStart = 0;
-    int columnEnd = m_Matrix.GetRowSize();
+    int columnEnd = m_Matrix.GetColumnSize();
 
     m_stopFromOutside = false;
 
