@@ -10,7 +10,8 @@ set(CMAKE_AUTOUIC ON)
 
 find_package(Qt5 REQUIRED COMPONENTS Widgets)
 
-add_executable(Myapp )
+add_executable(Myapp)
+
 # исходники
 set(sources 
 Main.cpp 
